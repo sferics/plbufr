@@ -6,7 +6,7 @@ TODO (these links do not exist yet!)
    :target: https://pypi.python.org/pypi/plbufr/
 
 
-*plbufr* is a Python package implementing a `Polars <https://github.com/pola-rs/polars>`_ reader (instead of pdbufr's Pandas) for the BUFR format using  `ecCodes <https://confluence.ecmwf.int/display/ECC>`_. Its goal is to be faster and more versatile than pdbufr. Therefore, it will implement more features like filtering of missing data which is currently not supported by pdbufr. It supports BUFR edition 3 and 4 files with uncompressed and compressed subsets. It works on Linux, MacOS and Windows, the ecCodes C-library is the only binary dependency. All modern versions of Python (>=3.6) and PyPy3 are supported.
+*plbufr* is a Python package implementing a `Polars <https://github.com/pola-rs/polars>`_ reader (instead of pdbufr's Pandas) for the BUFR format using  `ecCodes <https://confluence.ecmwf.int/display/ECC>`_. Its goal is to be faster and more versatile than `pdbufr <https://github.com/ecmwf/pdbufr>`_. Therefore, it will implement more features like filtering of missing data which is currently not supported by pdbufr. It supports BUFR edition 3 and 4 files with uncompressed and compressed subsets. It works on Linux, MacOS and Windows, the ecCodes C-library is the only binary dependency. All modern versions of Python (>=3.6) and PyPy3 are supported.
 
 TODO
 The documentation will be found at https://plbufr.readthedocs.io/.
