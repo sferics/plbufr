@@ -11,7 +11,7 @@ import typing as T
 import numpy as np
 import pytest
 
-pd = pytest.importorskip("pandas")
+pd = pytest.importorskip("polars")
 
 from pdbufr import read_bufr
 

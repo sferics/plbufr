@@ -9,7 +9,7 @@
 import os
 import typing as T
 
-import pandas as pd  # type: ignore
+import polars as pl
 
 from . import bufr_structure
 from .high_level_bufr.bufr import BufrFile
@@ -23,7 +23,7 @@ def read_bufr(
     filters: T.Mapping[str, T.Any] = {},
     required_columns: T.Union[bool, T.Iterable[str]] = True,
     flat: bool = False,
-) -> pd.DataFrame:
+) -> pl.DataFrame:
     """
     Read selected observations from a BUFR file into DataFrame.
     """
@@ -53,12 +53,12 @@ def _read_bufr(
     filters: T.Mapping[str, T.Any] = {},
     required_columns: T.Union[bool, T.Iterable[str]] = True,
     flat: bool = False,
-) -> pd.DataFrame:
+) -> pl.DataFrame:
     if not flat:
         observations = bufr_structure.stream_bufr(
             bufr_obj, columns, filters=filters, required_columns=required_columns
         )
-        return pd.DataFrame.from_records(observations)
+        return pl.from_records(observations)
     else:
 
         class ColumnInfo:
@@ -76,7 +76,7 @@ def _read_bufr(
             column_info=column_info,
         )
 
-        df = pd.DataFrame.from_records(observations)
+        df = pl.from_records(observations)
 
         # compare the column count in the first record to that of the
         # dataframe. If the latter is larger, then there were non-aligned columns,
