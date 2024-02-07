@@ -12,7 +12,7 @@ import typing as T
 
 import pytest
 
-import pdbufr
+import plbufr
 
 pd = pytest.importorskip("pandas")
 assert_frame_equal = pd.testing.assert_frame_equal
@@ -65,15 +65,15 @@ def test_computedKeys_Filter_with_latlon() -> None:
         geometry=lambda x: distance(center, x) < radius,
     )
 
-    rs = pdbufr.read_bufr(TEST_DATA_GEOPANDAS, columns)
+    rs = plbufr.read_bufr(TEST_DATA_GEOPANDAS, columns)
     assert isinstance(rs, pd.DataFrame)
     assert len(rs) == 178
 
-    rs = pdbufr.read_bufr(TEST_DATA_GEOPANDAS, columns, filter_wind)
+    rs = plbufr.read_bufr(TEST_DATA_GEOPANDAS, columns, filter_wind)
     assert isinstance(rs, pd.DataFrame)
     assert len(rs) == 175
 
-    rs = pdbufr.read_bufr(TEST_DATA_GEOPANDAS, columns, filter_wind_geometry)
+    rs = plbufr.read_bufr(TEST_DATA_GEOPANDAS, columns, filter_wind_geometry)
     assert isinstance(rs, pd.DataFrame)
     assert len(rs) == 7
     for station in rs.to_records():
@@ -103,15 +103,15 @@ def test_computedKeys_Filter_without_latlon() -> None:
         geometry=lambda x: distance(center, x) < radius,
     )
 
-    rs = pdbufr.read_bufr(TEST_DATA_GEOPANDAS, columns)
+    rs = plbufr.read_bufr(TEST_DATA_GEOPANDAS, columns)
     assert isinstance(rs, pd.DataFrame)
     assert len(rs) == 178
 
-    rs = pdbufr.read_bufr(TEST_DATA_GEOPANDAS, columns, filter_wind)
+    rs = plbufr.read_bufr(TEST_DATA_GEOPANDAS, columns, filter_wind)
     assert isinstance(rs, pd.DataFrame)
     assert len(rs) == 175
 
-    rs = pdbufr.read_bufr(TEST_DATA_GEOPANDAS, columns, filter_wind_geometry)
+    rs = plbufr.read_bufr(TEST_DATA_GEOPANDAS, columns, filter_wind_geometry)
     assert isinstance(rs, pd.DataFrame)
     assert len(rs) == 7
     for station in rs.to_records():

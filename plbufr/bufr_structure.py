@@ -14,7 +14,7 @@ import attr
 import eccodes  # type: ignore
 import numpy as np
 
-from pdbufr.high_level_bufr.bufr import bufr_code_is_coord
+from plbufr.high_level_bufr.bufr import bufr_code_is_coord
 
 from . import bufr_filters
 

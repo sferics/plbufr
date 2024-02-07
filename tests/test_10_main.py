@@ -8,7 +8,7 @@
 
 import pytest
 
-from pdbufr import __main__
+from plbufr import __main__
 
 
 def test_main() -> None:

@@ -150,7 +150,7 @@ Callables
           def filter_temp(t):
               return t > 250 and t <= 300
 
-          df = pdbufr.read_bufr("temp.bufr", 
+          df = plbufr.read_bufr("temp.bufr", 
               columns=("latitude", "longitude", "airTemperature"),
               filters={"airTemperature": filter_temp}, 
           )
@@ -202,7 +202,7 @@ Hierarchical mode
 
       .. code-block:: python
 
-          df = pdbufr.read_bufr("temp.bufr", 
+          df = plbufr.read_bufr("temp.bufr", 
           columns=("latitude", "longitude", "pressure", "airTemperature"),
           filters={"count": [1, 2]}, 
           )
@@ -247,7 +247,7 @@ Flat mode
 
     .. warning::
 
-        Messages/subsets in a BUFR file can have a different set of BUFR keys. When a new message/subset is processed :func:`read_bufr` adds it to the resulting DataFrame as a new record and columns that are not yet present in the output are automatically appended by Pandas to the end changing the original order of keys for that message. When this happens :func:`pdbufr` prints a warning message to the stdout
+        Messages/subsets in a BUFR file can have a different set of BUFR keys. When a new message/subset is processed :func:`read_bufr` adds it to the resulting DataFrame as a new record and columns that are not yet present in the output are automatically appended by Pandas to the end changing the original order of keys for that message. When this happens :func:`plbufr` prints a warning message to the stdout
         (see the example below or the :ref:`/examples/flat_dump.ipynb` notebook for details).
         
     **Example**
@@ -256,7 +256,7 @@ Flat mode
 
       .. code-block:: python
   
-        df = pdbufr.read_bufr("temp.bufr", columns="data",
+        df = plbufr.read_bufr("temp.bufr", columns="data",
                 flat=True
                 filters={"count": [1, 2]},  
               )
@@ -277,9 +277,9 @@ Flat mode
       .. code-block:: python
   
         import warnings
-        warnings.filterwarnings("ignore", module="pdbufr")
+        warnings.filterwarnings("ignore", module="plbufr")
 
-        df = pdbufr.read_bufr("temp.bufr", columns="data",
+        df = plbufr.read_bufr("temp.bufr", columns="data",
               flat=True
               filters={"count": [1, 2]},  
             )
@@ -293,6 +293,6 @@ Flat mode
 Message list object
 ------------------------
 
-:func:`read_bufr` can take a message list object as an input. It is particularly useful if we already have the BUFR data in another object/storage structure and we want to directly use it with pdbufr.
+:func:`read_bufr` can take a message list object as an input. It is particularly useful if we already have the BUFR data in another object/storage structure and we want to directly use it with plbufr.
 
-A message list object is sequence of messages, where a message must be a mutable mapping of ``str`` BUFR keys to values. Ideally, the message object should implement a context manager (``__enter__`` and ``__exit__``) and also the ``is_coord`` method, which determines if a key is a BUFR coordinate descriptor. If any of these methods are not available :func:`read_bufr` will automatically create a wrapper object to provide default implementations. For details see :class:`MessageWrapper` in ``pdbufr/bufr_structure.py``.
+A message list object is sequence of messages, where a message must be a mutable mapping of ``str`` BUFR keys to values. Ideally, the message object should implement a context manager (``__enter__`` and ``__exit__``) and also the ``is_coord`` method, which determines if a key is a BUFR coordinate descriptor. If any of these methods are not available :func:`read_bufr` will automatically create a wrapper object to provide default implementations. For details see :class:`MessageWrapper` in ``plbufr/bufr_structure.py``.

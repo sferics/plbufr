@@ -1,14 +1,14 @@
 Installation
 ============
 
-Installing pdbufr
+Installing plbufr
 --------------------
 
-*pdbufr* can be installed from PyPI with:
+*plbufr* can be installed from PyPI with:
 
 .. code-block:: bash
 
-    pip install pdbufr
+    pip install plbufr
 
 
 Installing the Python module
@@ -39,6 +39,6 @@ You may run a simple selfcheck command to ensure that your system is set up corr
 
 .. code-block:: bash
 
-    $ python -m pdbufr selfcheck
+    $ python -m plbufr selfcheck
     Found: ecCodes v2.19.0.
     Your system is ready.

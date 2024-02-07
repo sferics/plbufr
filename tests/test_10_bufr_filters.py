@@ -10,7 +10,7 @@ import typing as T
 
 import numpy as np
 
-from pdbufr import bufr_filters
+from plbufr import bufr_filters
 
 
 def test_BufrFilter_value() -> None:

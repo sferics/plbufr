@@ -22,7 +22,7 @@ sys.path.append(os.path.abspath("./_ext"))
 
 # -- Project information -----------------------------------------------------
 
-project = "pdbufr"
+project = "plbufr"
 author = "ECMWF"
 
 year = datetime.datetime.now().year
@@ -83,7 +83,7 @@ nbsphinx_prolog = """
 Try this notebook in |Binder|.
 
 .. |Binder| image:: https://mybinder.org/badge.svg
-   :target: https://mybinder.org/v2/gh/ecmwf/pdbufr/master?filepath=docs/{{ docname }}
+   :target: https://mybinder.org/v2/gh/ecmwf/plbufr/master?filepath=docs/{{ docname }}
    :alt: Binder
    :class: badge
 

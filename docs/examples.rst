@@ -3,7 +3,7 @@
 Examples
 ============
 
-Here is a list of example notebooks to illustrate how to extract BUFR data using pdbufr.
+Here is a list of example notebooks to illustrate how to extract BUFR data using plbufr.
 
 .. toctree::
     :maxdepth: 1

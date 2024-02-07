@@ -13,7 +13,7 @@ import pytest
 
 pd = pytest.importorskip("polars")
 
-from pdbufr import read_bufr
+from plbufr import read_bufr
 
 assert_frame_equal = pd.testing.assert_frame_equal
 

@@ -12,7 +12,7 @@ import eccodes  # type: ignore
 import numpy as np
 import pytest
 
-from pdbufr import bufr_filters, bufr_structure
+from plbufr import bufr_filters, bufr_structure
 
 
 def test_BufrKey() -> None:
@@ -426,7 +426,7 @@ def test_code_is_coord() -> None:
     """Ensures that the different ways of identifying a coordinate key from
     the BUFR descriptor/code agree"""
 
-    from pdbufr.high_level_bufr.bufr import bufr_code_is_coord
+    from plbufr.high_level_bufr.bufr import bufr_code_is_coord
 
     data = {
         "000300": True,

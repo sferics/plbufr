@@ -12,7 +12,7 @@ import typing as T
 import numpy as np
 import pytest
 
-import pdbufr
+import plbufr
 
 pd = pytest.importorskip("pandas")
 assert_frame_equal = pd.testing.assert_frame_equal
@@ -60,7 +60,7 @@ def download_test_data(filename: str) -> str:
 
     target = os.path.join(URL_DATA_FOLDER, filename)
     if not os.path.exists(target):
-        url_base = "https://get.ecmwf.int/repository/test-data/pdbufr/test-data/"
+        url_base = "https://get.ecmwf.int/repository/test-data/plbufr/test-data/"
         url = os.path.join(url_base, filename)
         os.makedirs(URL_DATA_FOLDER, mode=0o755, exist_ok=True)
         target = os.path.join(URL_DATA_FOLDER, filename)
@@ -71,35 +71,35 @@ def download_test_data(filename: str) -> str:
 
 
 def test_read_bufr_one_subset_one_filters() -> None:
-    res = pdbufr.read_bufr(TEST_DATA_1, columns=("latitude",))
+    res = plbufr.read_bufr(TEST_DATA_1, columns=("latitude",))
 
     assert isinstance(res, pd.DataFrame)
     assert "latitude" in res
     assert len(res) == 50
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_1, columns=("latitude",), filters={"rdbtimeTime": "115557"}
     )
 
     assert len(res) == 6
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_1, columns=("latitude"), filters={"rdbtimeTime": "115557"}
     )
 
     assert len(res) == 6
 
-    res = pdbufr.read_bufr(TEST_DATA_1, columns=("latitude",), filters={"count": 1})
+    res = plbufr.read_bufr(TEST_DATA_1, columns=("latitude",), filters={"count": 1})
 
     assert len(res) == 1
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_1, columns=("latitude",), filters={"stationNumber": 894}
     )
 
     assert len(res) == 1
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_1, columns=("latitude",), filters={"stationNumber": [894, 103]}
     )
 
@@ -130,32 +130,32 @@ def test_read_bufr_one_subset_one_observation_data() -> None:
         "horizontalVisibility": 55000.0,
     }
 
-    res = pdbufr.read_bufr(TEST_DATA_1, columns=columns)
+    res = plbufr.read_bufr(TEST_DATA_1, columns=columns)
 
     assert len(res) == 50
     assert res.iloc[0].to_dict() == expected_first_row
 
 
 def test_read_bufr_multiple_uncompressed_subsets_one_observation() -> None:
-    res = pdbufr.read_bufr(TEST_DATA_2, columns=("latitude",))
+    res = plbufr.read_bufr(TEST_DATA_2, columns=("latitude",))
 
     assert isinstance(res, pd.DataFrame)
     assert "latitude" in dict(res)
     assert len(res) == 12
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_2, columns=("latitude",), filters={"observedData": 1}
     )
 
     assert len(res) == 12
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_2, columns=("latitude",), filters={"stationNumber": 27}
     )
 
     assert len(res) == 1
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_2, columns=("latitude",), filters={"stationNumber": [27, 84]}
     )
 
@@ -174,20 +174,20 @@ def test_read_bufr_multiple_uncompressed_subsets_one_observation() -> None:
         "airTemperature": 276.45,
     }
 
-    res = pdbufr.read_bufr(TEST_DATA_2, columns=columns, filters={"stationNumber": 27})
+    res = plbufr.read_bufr(TEST_DATA_2, columns=columns, filters={"stationNumber": 27})
 
     assert len(res) == 1
     assert res.iloc[0].to_dict() == expected_first_row
 
 
 def test_read_bufr_one_subsets_multiple_observations_filters() -> None:
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_3, columns=("latitude",), filters={"stationNumber": 907}
     )
 
     assert len(res) == 1
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_3, columns=("latitude",), filters={"pressure": [100000, 26300]}
     )
 
@@ -227,20 +227,20 @@ def test_read_bufr_one_subsets_multiple_observations_data() -> None:
         ]
     )
 
-    res = pdbufr.read_bufr(TEST_DATA_3, columns=columns, filters={"pressure": 100000})
+    res = plbufr.read_bufr(TEST_DATA_3, columns=columns, filters={"pressure": 100000})
 
     assert len(res) == 408
     assert res.iloc[:2].equals(expected_first_rows[res.columns])
 
 
 def test_read_bufr_multiple_compressed_subsets_multiple_observations_filters() -> None:
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_4, columns=("latitude",), filters={"hour": 11, "minute": 48}
     )
 
     assert len(res) == 56
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_4, columns=("latitude",), filters={"hour": 11, "minute": [48, 49]}
     )
 
@@ -265,7 +265,7 @@ def test_read_bufr_multiple_compressed_subsets_multiple_observations_data() -> N
         "brightnessTemperature": 218.76,
     }
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_4,
         columns=columns,
         filters={
@@ -382,7 +382,7 @@ def test_temp_single_station_1() -> None:
         }
     )
 
-    res = pdbufr.read_bufr(TEST_DATA_3, columns=columns, filters={"stationNumber": 823})
+    res = plbufr.read_bufr(TEST_DATA_3, columns=columns, filters={"stationNumber": 823})
 
     assert_frame_equal(res, expected[res.columns])
 
@@ -426,7 +426,7 @@ def test_temp_single_station_2() -> None:
         }
     )
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_3,
         columns=columns,
         filters={"stationNumber": 823, "verticalSoundingSignificance": 32},
@@ -460,7 +460,7 @@ def test_temp_single_station_3() -> None:
     }
     ref = pd.DataFrame.from_dict(ref)
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_3,
         columns=columns,
         filters={
@@ -490,7 +490,7 @@ def test_tropicalcyclone_1() -> None:
         }
     )
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_5,
         columns=columns,
         filters={"stormIdentifier": "70E", "ensembleMemberNumber": 4},
@@ -498,7 +498,7 @@ def test_tropicalcyclone_1() -> None:
 
     assert len(res) == 34
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_5,
         columns=columns,
         filters={"stormIdentifier": "70E", "ensembleMemberNumber": 4},
@@ -625,7 +625,7 @@ def test_tropicalcyclone_2() -> None:
         }
     )
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_5,
         columns=columns,
         filters={
@@ -679,7 +679,7 @@ def test_wave_1() -> None:
         ]
     )
 
-    res = pdbufr.read_bufr(TEST_DATA_6, columns=columns)
+    res = plbufr.read_bufr(TEST_DATA_6, columns=columns)
     res_end = res[70:].reset_index(drop=True)
 
     assert len(res) == 72
@@ -696,7 +696,7 @@ def test_ens_uncompressed() -> None:
         "airTemperatureAt2M",
     ]
 
-    res = pdbufr.read_bufr(TEST_DATA_7, columns=columns)
+    res = plbufr.read_bufr(TEST_DATA_7, columns=columns)
 
     ref = {
         "latitude": [51.52, 51.52],
@@ -714,7 +714,7 @@ def test_ens_uncompressed() -> None:
 def test_ens_compressed() -> None:
     columns = ["longitude", "latitude", "ensembleMemberNumber", "timePeriod", "cape"]
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_9,
         columns=columns,
         filters={"timePeriod": [0, 24], "ensembleMemberNumber": [2, 5]},
@@ -797,7 +797,7 @@ def test_sat_compressed_1() -> None:
     ref_12 = pd.DataFrame(expected_12_row, index=[11])
     ref_13 = pd.DataFrame(expected_13_row, index=[12])
 
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_8, columns=columns, filters={"firstOrderStatistics": 15}
     )
 
@@ -813,7 +813,7 @@ def assert_simple_key_core(path, param, key, key_value, ref, part=False):
     columns = [param, key]
     filters = {key: key_value}
 
-    res = pdbufr.read_bufr(path, columns=columns, filters=filters)
+    res = plbufr.read_bufr(path, columns=columns, filters=filters)
 
     ref_cnt = len(ref) if ref is not None else 0
     if ref_cnt > 0:
@@ -908,7 +908,7 @@ def assert_temp_profile_core(path, param, vert_sign_value, ref_param, ref_pressu
         "verticalSoundingSignificance": vert_sign_value,
     }
 
-    res = pdbufr.read_bufr(path, columns=columns, filters=filters)
+    res = plbufr.read_bufr(path, columns=columns, filters=filters)
 
     ref_cnt = len(ref_param) if ref_param is not None else 0
     assert len(res) == ref_cnt
@@ -1001,7 +1001,7 @@ def assert_nested_coords_core(
     else:
         filters = {coord_key_1: coord_value_1, coord_key_2: coord_value_2}
 
-    res = pdbufr.read_bufr(path, columns=columns, filters=filters)
+    res = plbufr.read_bufr(path, columns=columns, filters=filters)
 
     ref_cnt = len(ref_param) if ref_param is not None else 0
     if ref_cnt > 0:
@@ -1126,7 +1126,7 @@ def test_new_synop_data() -> None:
 
     ref = pd.DataFrame([expected_first_row, expected_second_row, expected_third_row])
 
-    res = pdbufr.read_bufr(TEST_DATA_12, columns=columns_1)
+    res = plbufr.read_bufr(TEST_DATA_12, columns=columns_1)
 
     assert len(res) == 3
     assert_frame_equal(res, ref[res.columns])
@@ -1143,7 +1143,7 @@ def test_new_synop_data() -> None:
     filters = {
         "heightOfSensorAboveLocalGroundOrDeckOfMarinePlatform": slice(1, 20),
     }
-    res = pdbufr.read_bufr(
+    res = plbufr.read_bufr(
         TEST_DATA_12, columns=columns_2, filters=filters, required_columns=False
     )
 
@@ -1181,7 +1181,7 @@ def test_aircraft_compressed_with_string() -> None:
 
     ref = pd.DataFrame([expected_first_row, expected_second_row, expected_last_row])
 
-    res = pdbufr.read_bufr(TEST_DATA_13, columns=columns)
+    res = plbufr.read_bufr(TEST_DATA_13, columns=columns)
 
     assert len(res) == 186
     res = res.iloc[[0, 1, -1]].reset_index(drop=True)
@@ -1211,7 +1211,7 @@ def test_message_structure_cache() -> None:
     }
 
     f = download_test_data("message_structure_diff_2.bufr")
-    res = pdbufr.read_bufr(f, columns=columns)
+    res = plbufr.read_bufr(f, columns=columns)
 
     assert len(res) == 6
     assert res.to_dict() == ref

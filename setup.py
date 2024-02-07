@@ -30,14 +30,14 @@ def parse_version_from(path: str) -> str:
 
 
 setuptools.setup(
-    name="pdbufr",
-    version=parse_version_from("pdbufr/__init__.py"),
+    name="plbufr",
+    version=parse_version_from("plbufr/__init__.py"),
     description="Pandas reader for the BUFR format using ecCodes.",
     long_description=read("README.rst"),
     author="European Centre for Medium-Range Weather Forecasts (ECMWF)",
     author_email="software.support@ecmwf.int",
     license="Apache License Version 2.0",
-    url="https://github.com/ecmwf/pdbufr",
+    url="https://github.com/ecmwf/plbufr",
     packages=setuptools.find_packages(),
     include_package_data=True,
     install_requires=["attrs", "eccodes", "polars", "hypothesis"],

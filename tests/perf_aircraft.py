@@ -8,13 +8,13 @@
 
 import os
 
-import pdbufr
+import plbufr
 
 SAMPLE_DATA_FOLDER = os.path.join(os.path.dirname(__file__), "sample-data")
 TEST_DATA = os.path.join(SAMPLE_DATA_FOLDER, "perf_aircraft.bufr")
 
 
-res = pdbufr.read_bufr(
+res = plbufr.read_bufr(
     TEST_DATA,
     columns=[
         "latitude",

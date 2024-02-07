@@ -58,7 +58,7 @@ def _read_bufr(
         observations = bufr_structure.stream_bufr(
             bufr_obj, columns, filters=filters, required_columns=required_columns
         )
-        return pl.from_records(observations)
+        return pl.DataFrame(observations, infer_schema_length=1000000)
     else:
 
         class ColumnInfo:
@@ -76,7 +76,7 @@ def _read_bufr(
             column_info=column_info,
         )
 
-        df = pl.from_records(observations)
+        df = pl.DataFrame(observations, infer_schema_length=1000000)
 
         # compare the column count in the first record to that of the
         # dataframe. If the latter is larger, then there were non-aligned columns,
