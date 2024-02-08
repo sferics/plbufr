@@ -16,11 +16,11 @@ LOG = logging.getLogger(__name__)
 
 @attr.attrs(auto_attribs=True, frozen=True)
 class BufrFilter:
-    filter: T.Union[slice, T.Set[T.Any], T.Callable[[T.Any], bool]]
+    filter: slice | T.Set[T.Any] | T.Callable[[T.Any], bool]
 
     @classmethod
     def from_user(cls, user_filter: T.Any) -> "BufrFilter":
-        filter: T.Union[slice, T.Set[T.Any], T.Callable[[T.Any], bool]]
+        filter: slice | T.Set[T.Any] | T.Callable[[T.Any], bool]
 
         if isinstance(user_filter, slice):
             if user_filter.step is not None:
@@ -69,7 +69,11 @@ def is_match(
         if compiled_filters[k].match(message[k]):
             matches += 1
         else:
+            #continue
             return False
     if required and matches < len(compiled_filters):
+    #if required and not matches:
+    #print("MATCHES", matches)
+    #if matches:
         return False
     return True

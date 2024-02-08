@@ -219,7 +219,7 @@ def make_message_uid(message: T.Mapping[str, T.Any]) -> T.Tuple[T.Optional[int],
         message["numberOfSubsets"],
     )
 
-    descriptors: T.Union[int, T.List[int]] = message["unexpandedDescriptors"]
+    descriptors: int | T.List[int] = message["unexpandedDescriptors"]
     if isinstance(descriptors, int):
         message_uid += (descriptors, None)
     else:
@@ -373,8 +373,11 @@ def extract_observations(
     message: T.Mapping[str, T.Any],
     filtered_keys: T.List[BufrKey],
     filters: T.Dict[str, bufr_filters.BufrFilter] = {},
+    filter_method: T.Callable = all,
+    skip_na: bool = False,
     base_observation: T.Dict[str, T.Any] = {},
 ) -> T.Iterator[T.Dict[str, T.Any]]:
+    
     value_cache = {}
     try:
         is_compressed = bool(message["compressedData"])
@@ -391,6 +394,8 @@ def extract_observations(
         current_observation = collections.OrderedDict(base_observation)
         current_levels: T.List[int] = [0]
         failed_match_level: T.Optional[int] = None
+        
+        if skip_na: count_na = 0
 
         for bufr_key in filtered_keys:
             level = bufr_key.level
@@ -400,7 +405,7 @@ def extract_observations(
                 continue
 
             # TODO: make into a function
-            if all(name in current_observation for name in filters) and (
+            if filter_method(name in current_observation for name in filters) and (
                 level < current_levels[-1]
                 or (level == current_levels[-1] and name in current_observation)
             ):
@@ -430,11 +435,17 @@ def extract_observations(
                 and len(value) == subset_count
             ):
                 value = value[subset]
-
+            """
             if isinstance(value, float) and value == eccodes.CODES_MISSING_DOUBLE:
                 value = None
+                count_na += 1
             elif isinstance(value, int) and value == eccodes.CODES_MISSING_LONG:
                 value = None
+                count_na += 1
+            """
+            if value in {eccodes.CODES_MISSING_DOUBLE, eccodes.CODES_MISSING_LONG}:
+               value = None
+               if skip_na: count_na += 1
 
             if name in filters:
                 if filters[name].match(value):
@@ -445,15 +456,24 @@ def extract_observations(
 
             current_observation[name] = value
             current_levels.append(level)
-
+        
+        """
         # yield the last observation
         if all(name in current_observation for name in filters):
             yield dict(current_observation)
-
+        """
+        
+        if skip_na and count_na == len(current_observation):
+            yield None
+        else:
+            if filter_method(name in current_observation for name in filters):
+                yield dict(current_observation)
+        
 
 def extract_message(
     message: T.Mapping[str, T.Any],
     filters: T.Dict[str, bufr_filters.BufrFilter] = {},
+    filter_method: T.Callable = all,
     base_observation: T.Dict[str, T.Any] = {},
     required_columns: T.Set[str] = set(),
     header_keys: T.Set[str] = set(),
@@ -511,7 +531,7 @@ def extract_message(
                 if uncompressed_subset > 0:
                     if (
                         current_observation
-                        and all(filters_match.values())
+                        and filter_method(filters_match.values())
                         and all(required_columns_match.values())
                     ):
                         yield dict(current_observation)
@@ -587,7 +607,9 @@ def extract_message(
         # yield the last observation
         if (
             current_observation
-            and all(filters_match.values())
+            #TODO any option
+            #TODO skip_na already here?
+            and filter_method(filters_match.values())
             and all(required_columns_match.values())
         ):
             yield dict(current_observation)
@@ -607,6 +629,7 @@ def add_computed_keys(
             computed_value = getter(observation, "", keys)
         except Exception:
             pass
+
         if computed_value:
             if computed_key in filters:
                 if filters[computed_key].match(computed_value):
@@ -638,9 +661,11 @@ def test_computed_keys(
 
 def stream_bufr(
     bufr_file: T.Iterable[T.MutableMapping[str, T.Any]],
-    columns: T.Union[T.Sequence[str], str],
+    columns: T.Sequence[str] | str,
     filters: T.Mapping[str, T.Any] = {},
-    required_columns: T.Union[bool, T.Iterable[str]] = True,
+    filter_method: T.Callable = all,
+    skip_na: bool = False,
+    required_columns: bool | T.Iterable[str] = True,
     prefilter_headers: bool = False,
 ) -> T.Iterator[T.Dict[str, T.Any]]:
     """
@@ -665,7 +690,7 @@ def stream_bufr(
         required_columns = set(required_columns)
     else:
         raise TypeError("required_columns must be a bool or an iterable")
-
+    
     filters = dict(filters)
 
     value_filters = {k: bufr_filters.BufrFilter.from_user(filters[k]) for k in filters}
@@ -709,11 +734,15 @@ def stream_bufr(
             }
 
             for observation in extract_observations(
-                message,
-                filtered_keys,
-                value_filters_without_computed,
-                observation,
+                message=message,
+                filtered_keys=filtered_keys,
+                filters=value_filters_without_computed,
+                filter_method=filter_method,
+                skip_na=skip_na,
+                base_observation=observation,
             ):
+                if skip_na and observation is None: continue
+
                 augmented_observation = add_computed_keys(
                     observation, included_keys, value_filters
                 )
@@ -728,9 +757,9 @@ def stream_bufr(
 
 def stream_bufr_flat(
     bufr_file: T.Iterable[T.MutableMapping[str, T.Any]],
-    columns: T.Union[T.Sequence[str], str],
+    columns: T.Sequence[str] | str,
     filters: T.Mapping[str, T.Any] = {},
-    required_columns: T.Union[bool, T.Iterable[str]] = True,
+    required_columns: bool | T.Iterable[str] = True,
     prefilter_headers: bool = False,
     column_info: T.Any = None,
 ) -> T.Iterator[T.Dict[str, T.Any]]:
@@ -822,11 +851,13 @@ def stream_bufr_flat(
             observation: T.Dict[str, T.Any] = {}
 
             for observation in extract_message(
-                message,
-                message_value_filters,
-                observation,
-                message_required_columns,
-                header_keys,
+                message=message,
+                filters=message_value_filters,
+                filter_method=filter_method,
+                base_observation=observation,
+                skip_na=skip_na,
+                required_columns=message_required_columns,
+                header_keys=header_keys,
             ):
                 if header_keys:
                     if not add_header:

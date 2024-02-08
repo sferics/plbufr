@@ -16,14 +16,15 @@ from .high_level_bufr.bufr import BufrFile
 
 
 def read_bufr(
-    path_or_messages: T.Union[
-        str, bytes, "os.PathLike[T.Any]", T.Iterable[T.MutableMapping[str, T.Any]]
-    ],
-    columns: T.Union[T.Sequence[str], str] = [],
+    path_or_messages: str | bytes | os.PathLike[T.Any] | T.Iterable[T.MutableMapping[str, T.Any]],
+    columns: T.Sequence[str] | str = [],
     filters: T.Mapping[str, T.Any] = {},
-    required_columns: T.Union[bool, T.Iterable[str]] = True,
+    filter_method: T.Callable = all,
+    skip_na: bool = False,
+    required_columns: bool | T.Iterable[str] = True,
     flat: bool = False,
-) -> pl.DataFrame:
+    lazy: bool = False,
+) -> pl.DataFrame | pl.LazyFrame:
     """
     Read selected observations from a BUFR file into DataFrame.
     """
@@ -34,31 +35,49 @@ def read_bufr(
                 bufr_file,
                 columns=columns,
                 filters=filters,
+                filter_method=filter_method,
+                skip_na=skip_na,
                 required_columns=required_columns,
                 flat=flat,
+                lazy=lazy,
             )
     else:
         return _read_bufr(
             path_or_messages,
             columns=columns,
             filters=filters,
+            filter_method=filter_method,
+            skip_na=skip_na,
             required_columns=required_columns,
             flat=flat,
+            lazy=lazy,
         )
 
 
 def _read_bufr(
     bufr_obj: T.Iterable[T.MutableMapping[str, T.Any]],
-    columns: T.Union[T.Sequence[str], str] = [],
+    columns: T.Sequence[str] | str = [],
     filters: T.Mapping[str, T.Any] = {},
-    required_columns: T.Union[bool, T.Iterable[str]] = True,
+    filter_method: T.Callable = all,
+    skip_na: bool = False,
+    required_columns: bool | T.Iterable[str] = True,
     flat: bool = False,
-) -> pl.DataFrame:
+    lazy: bool = False,
+) -> pl.DataFrame | pl.LazyFrame:
     if not flat:
         observations = bufr_structure.stream_bufr(
-            bufr_obj, columns, filters=filters, required_columns=required_columns
+            bufr_file=bufr_obj,
+            columns=columns,
+            filters=filters,
+            filter_method=filter_method,
+            skip_na=skip_na,
+            required_columns=required_columns
         )
-        return pl.DataFrame(observations, infer_schema_length=1000000)
+        if lazy:
+            print("LazyFrame")
+            return pl.LazyFrame(observations, infer_schema_length=1000000)
+        else:
+            return pl.DataFrame(observations, infer_schema_length=1000000)
     else:
 
         class ColumnInfo:
@@ -69,14 +88,17 @@ def _read_bufr(
 
         # returns a generator
         observations = bufr_structure.stream_bufr_flat(
-            bufr_obj,
-            columns,
+            bufr_file=bufr_obj,
+            columns=columns,
             filters=filters,
+            filter_method=filter_method,
             required_columns=required_columns,
             column_info=column_info,
         )
-
-        df = pl.DataFrame(observations, infer_schema_length=1000000)
+        if lazy:
+            df = pl.LazyFrame(observations, infer_schema_length=1000000)
+        else:
+            df = pl.DataFrame(observations, infer_schema_length=1000000)
 
         # compare the column count in the first record to that of the
         # dataframe. If the latter is larger, then there were non-aligned columns,
