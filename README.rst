@@ -2,7 +2,7 @@ plbufr
 ======
 
 TODO (the pypi link does not exist yet!)
-.. image:: https://img.shields.io/pypi/v/pdbufr.svg
+.. image:: https://img.shields.io/pypi/v/plbufr.svg
    :target: https://pypi.python.org/pypi/plbufr/
 
 
@@ -16,7 +16,7 @@ License
 =======
 
 Copyright 2019- European Centre for Medium-Range Weather Forecasts (ECMWF).
-Copyright 2023- Juri Hubrig
+Copyright 2023- Juri Hubrig (https://github.com/sferics)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
