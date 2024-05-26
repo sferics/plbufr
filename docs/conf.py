@@ -83,7 +83,7 @@ nbsphinx_prolog = """
 Try this notebook in |Binder|.
 
 .. |Binder| image:: https://mybinder.org/badge.svg
-   :target: https://mybinder.org/v2/gh/ecmwf/plbufr/master?filepath=docs/{{ docname }}
+   :target: https://mybinder.org/v2/gh/sferics/plbufr/master?filepath=docs/{{ docname }}
    :alt: Binder
    :class: badge
 

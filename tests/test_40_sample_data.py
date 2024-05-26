@@ -14,8 +14,9 @@ import pytest
 
 import plbufr
 
-pd = pytest.importorskip("pandas")
-assert_frame_equal = pd.testing.assert_frame_equal
+pl = pytest.importorskip("polars")
+#TODO find the polars equivalent
+assert_frame_equal = pl.testing.assert_frame_equal
 
 SAMPLE_DATA_FOLDER = os.path.join(os.path.dirname(__file__), "sample-data")
 URL_DATA_FOLDER = os.path.join(os.path.dirname(__file__), "url-data")
@@ -60,7 +61,7 @@ def download_test_data(filename: str) -> str:
 
     target = os.path.join(URL_DATA_FOLDER, filename)
     if not os.path.exists(target):
-        url_base = "https://get.ecmwf.int/repository/test-data/plbufr/test-data/"
+        url_base = "https://get.ecmwf.int/repository/test-data/pdbufr/test-data/"
         url = os.path.join(url_base, filename)
         os.makedirs(URL_DATA_FOLDER, mode=0o755, exist_ok=True)
         target = os.path.join(URL_DATA_FOLDER, filename)
@@ -738,7 +739,7 @@ def test_sat_compressed_1() -> None:
         ts = pd.Timestamp(s)
         try:
             ts = ts.as_unit("ns")
-        except:
+        except Exception:
             pass
         return ts
 

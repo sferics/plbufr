@@ -11,9 +11,9 @@ import typing as T
 import numpy as np
 import pytest
 
-pd = pytest.importorskip("polars")
+pd = pytest.importorskip("pandas")
 
-from plbufr import read_bufr
+from plbufr import read_bufr  # noqa: E402
 
 assert_frame_equal = pd.testing.assert_frame_equal
 

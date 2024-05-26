@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#
 # (C) Copyright 2019- ECMWF.
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
@@ -8,6 +6,15 @@
 # granted to it by virtue of its status as an intergovernmental organisation
 # nor does it submit to any jurisdiction.
 
-import setuptools  # type: ignore
+from .bufr_structure import stream_bufr
 
-setuptools.setup()
+__all__ = ["stream_bufr"]
+
+try:
+    from .bufr_read import read_bufr
+
+    __all__ += ["read_bufr"]
+except ModuleNotFoundError:  # pragma: no cover
+    pass
+
+__version__ = "0.11.0"

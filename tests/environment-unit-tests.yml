@@ -6,7 +6,7 @@ dependencies:
 - attrs
 - pip
 - numpy
-- polars
+- pandas
 - make
 - mypy
 - myst-parser
@@ -14,6 +14,7 @@ dependencies:
 - pydata-sphinx-theme
 - pytest
 - pytest-cov
+- requests
 - sphinx
 - sphinx_rtd_theme
 - sphinxcontrib-apidoc
