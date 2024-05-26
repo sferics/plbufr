@@ -24,13 +24,14 @@ def read_bufr(
     required_columns: bool | T.Iterable[str] = True,
     flat: bool = False,
     return_method: str = "df"
-) -> T.Any #pl.DataFrame | pl.LazyFrame | T.Generator:
+    ) -> T.Any: #pl.DataFrame | pl.LazyFrame | T.Generator:
     """
     Read selected observations from a BUFR file into DataFrame.
     """
 
     if isinstance(path_or_messages, (str, bytes, PathLike)):
-        with BufrFile(path_or_messages) as bufr_file:  # type: ignore
+        if return_method == "gt":
+            bufr_file = BufrFile(path_or_messages)
             return _read_bufr(
                 bufr_file,
                 columns=columns,
@@ -39,8 +40,20 @@ def read_bufr(
                 skip_na=skip_na,
                 required_columns=required_columns,
                 flat=flat,
-                return_method=return_method                
-            )
+                return_method=return_method
+            ), bufr_file
+        else:
+            with BufrFile(path_or_messages) as bufr_file:  # type: ignore
+                return _read_bufr(
+                    bufr_file,
+                    columns=columns,
+                    filters=filters,
+                    filter_method=filter_method,
+                    skip_na=skip_na,
+                    required_columns=required_columns,
+                    flat=flat,
+                    return_method=return_method                
+                )
     else:
         return _read_bufr(
             path_or_messages,
@@ -63,7 +76,7 @@ def _read_bufr(
     required_columns: bool | T.Iterable[str] = True,
     flat: bool = False,
     return_method: str = "df"
-) -> T.Any #pl.DataFrame | pl.LazyFrame | T.Generator
+    ) -> T.Any: #pl.DataFrame | pl.LazyFrame | T.Generator
     if not flat:
         observations = bufr_structure.stream_bufr(
             bufr_file=bufr_obj,
