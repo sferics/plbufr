@@ -11,7 +11,7 @@ import typing as T
 import numpy as np
 import pytest
 
-pd = pytest.importorskip("pandas")
+pd = pytest.importorskip("polars")
 
 from plbufr import read_bufr  # noqa: E402
 

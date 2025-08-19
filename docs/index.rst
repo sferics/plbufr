@@ -6,7 +6,7 @@ Welcome to plbufr's documentation
 
   This documentation is still work in progress and can only be regarded as a **draft**.
 
-*plbufr* is a Python package implementing a `Pandas <https://pandas.pydata.org>`_ reader for the BUFR format using  `ecCodes <https://confluence.ecmwf.int/display/ECC>`_.  It features the :func:`read_bufr` function to extract data from a BUFR file as a Pandas DataFrame using a rich filtering engine.
+*plbufr* is a Python package implementing a `Polars <https://pola.rs>`_ reader for the BUFR format using  `ecCodes <https://confluence.ecmwf.int/display/ECC>`_.  It features the :func:`read_bufr` function to extract data from a BUFR file as a Pandas DataFrame using a rich filtering engine.
 
 *plbufr* supports BUFR 3 and 4 files with uncompressed and compressed subsets. It works on Linux, MacOS and Windows, the ecCodes C-library is the only binary dependency. All modern versions of Python (>=3.6) and PyPy3 are supported.
 

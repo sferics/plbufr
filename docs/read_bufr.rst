@@ -3,7 +3,7 @@ read_bufr
 
 .. py:function:: read_bufr(path, columns=[], filters={}, required_columns=True, flat=False)
 
-    Extract data from BUFR as a pandas.DataFrame with the specified ``columns`` applying the ``filters`` either in :ref:`hierarchical <tree-mode-section>` or :ref:`flat <flat-mode-section>` mode.
+    Extract data from BUFR as a polars.DataFrame with the specified ``columns`` applying the ``filters`` either in :ref:`hierarchical <tree-mode-section>` or :ref:`flat <flat-mode-section>` mode.
 
     :param path: path to the BUFR file or a :ref:`message_list_object`
     :type path: str, bytes, os.PathLike or a :ref:`message_list_object`
@@ -28,7 +28,7 @@ read_bufr
     :type required_columns: bool, iterable[str]
     :param flat: enables flat extraction mode. When it is ``True`` each message/subset is treated as a :ref:`flat list <flat-mode-section>`, while when it is ``False`` (default), data is extracted as if the message had a :ref:`tree-like hierarchy <tree-mode-section>`. See details below. New in *version 0.10.0*
     :type flat: bool
-    :rtype: pandas.DataFrame
+    :rtype: polars.DataFrame
 
 
     In order to correctly use :func:`read_bufr` for a given BUFR file first you need to understand the structure of the messages and the keys/values you can use for data extraction and filter definition. The BUFR structure can be explored with *ecCodes* command line tools `bufr_ls <https://confluence.ecmwf.int/display/ECC/bufr_ls>`_  and `bufr_dump <https://confluence.ecmwf.int/display/ECC/bufr_dump>`_. You can also use `CodesUI <https://confluence.ecmwf.int/display/METV/CodesUI>`_ or `Metview <https://metview.readthedocs.io>`_, which provide graphical user interfaces to inspect BUFR/GRIB data.
@@ -58,7 +58,7 @@ BUFR keys
 
           [longitude,latitude,heightOfStationGroundAboveMeanSeaLevel]
 
-      as required for geopandas.
+      as required for geopolars.
     * "CRS": generated from the "coordinateReferenceSystem" key using the following mapping:
 
           .. list-table::

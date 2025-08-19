@@ -14,8 +14,9 @@ import pytest
 
 import plbufr
 
-pd = pytest.importorskip("pandas")
-assert_frame_equal = pd.testing.assert_frame_equal
+pl = pytest.importorskip("polars")
+#TODO find the equivalent of the pandas method in polars
+assert_frame_equal = pl.testing.assert_frame_equal
 
 SAMPLE_DATA_FOLDER = os.path.join(os.path.dirname(__file__), "sample-data")
 TEST_DATA_GEOPANDAS = os.path.join(

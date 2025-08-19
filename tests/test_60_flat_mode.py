@@ -15,8 +15,9 @@ import pytest
 
 import plbufr
 
-pd = pytest.importorskip("pandas")
-assert_frame_equal = pd.testing.assert_frame_equal
+pl = pytest.importorskip("polars")
+#TODO find the equivalent of the pandas method in polars
+assert_frame_equal = pl.testing.assert_frame_equal
 
 SAMPLE_DATA_FOLDER = os.path.join(os.path.dirname(__file__), "sample-data")
 
@@ -43,7 +44,7 @@ def test_read_flat_bufr_args() -> None:
     # default args
     res = plbufr.read_bufr(TEST_DATA_1, flat=True)
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#totalPrecipitationPast6Hours" in res
@@ -55,7 +56,7 @@ def test_read_flat_bufr_args() -> None:
     for columns in ["", "all"]:
         res = plbufr.read_bufr(TEST_DATA_1, columns, flat=True)
 
-        assert isinstance(res, pd.DataFrame)
+        assert isinstance(res, pl.DataFrame)
         assert "edition" in res
         assert "#1#latitude" in res
         assert "#1#totalPrecipitationPast6Hours" in res
@@ -67,7 +68,7 @@ def test_read_flat_bufr_args() -> None:
     for columns in [[], "", [""], "all", ["all"]]:  # type: ignore
         res = plbufr.read_bufr(TEST_DATA_1, columns=columns, flat=True)
 
-        assert isinstance(res, pd.DataFrame)
+        assert isinstance(res, pl.DataFrame)
         assert "edition" in res
         assert "#1#latitude" in res
         assert "#1#totalPrecipitationPast6Hours" in res
@@ -100,7 +101,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
     # all
     res = plbufr.read_bufr(TEST_DATA_1, "all", flat=True)
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#totalPrecipitationPast6Hours" in res
@@ -111,7 +112,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
     # omitting header or data sections
     res = plbufr.read_bufr(TEST_DATA_1, "data", flat=True)
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" not in res
     assert "#1#latitude" in res
     assert len(res.columns) == 53
@@ -119,7 +120,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
 
     res = plbufr.read_bufr(TEST_DATA_1, "header", flat=True)
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" not in res
     assert len(res.columns) == 50
@@ -130,7 +131,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
     for r in required_columns:
         res = plbufr.read_bufr(TEST_DATA_1, "all", flat=True, required_columns=r)
         print(f"r={r}")
-        assert isinstance(res, pd.DataFrame)
+        assert isinstance(res, pl.DataFrame)
         assert "edition" in res
         assert "#1#latitude" in res
         assert len(res.columns) == 103
@@ -139,7 +140,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
     res = plbufr.read_bufr(
         TEST_DATA_1, "all", flat=True, required_columns="totalPrecipitationPast6Hours"
     )
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#totalPrecipitationPast6Hours" in res
@@ -152,7 +153,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
         flat=True,
         required_columns="totalPrecipitationPast24Hours",
     )
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#totalPrecipitationPast24Hours" in res
@@ -161,7 +162,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
 
     res = plbufr.read_bufr(TEST_DATA_1, "all", flat=True, required_columns="xyz")
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert res.empty
 
     # omitting header or data sections + required columns
@@ -169,7 +170,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
     for r in required_columns:
         res = plbufr.read_bufr(TEST_DATA_1, "data", flat=True, required_columns=r)
         print(f"header=False r={r}")
-        assert isinstance(res, pd.DataFrame)
+        assert isinstance(res, pl.DataFrame)
         assert "edition" not in res
         assert "#1#latitude" in res
         assert len(res.columns) == 53
@@ -179,7 +180,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
     for r in required_columns:
         res = plbufr.read_bufr(TEST_DATA_1, "header", flat=True, required_columns=r)
         print(f"data=False r={r}")
-        assert isinstance(res, pd.DataFrame)
+        assert isinstance(res, pl.DataFrame)
         assert "edition" in res
         assert "#1#latitude" not in res
         assert len(res.columns) == 50
@@ -190,7 +191,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
         TEST_DATA_1, "all", flat=True, filters={"rdbtimeTime": "115557"}
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert len(res.columns) == 103
@@ -204,7 +205,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
         required_columns=["latitude", "edition"],
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert len(res.columns) == 103
@@ -212,7 +213,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
 
     res = plbufr.read_bufr(TEST_DATA_1, "all", flat=True, filters={"count": 1})
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert len(res.columns) == 102
@@ -222,7 +223,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
         TEST_DATA_1, "all", flat=True, filters={"stationNumber": 894}
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#totalPrecipitationPast6Hours" in res
@@ -234,7 +235,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
         TEST_DATA_1, "all", flat=True, filters={"stationNumber": [894, 103]}
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#totalPrecipitationPast6Hours" in res
@@ -246,7 +247,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
         TEST_DATA_1, "all", flat=True, filters={"WMO_station_id": [3894, 7103]}
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#totalPrecipitationPast6Hours" in res
@@ -257,7 +258,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
     # compare to csv
     res = plbufr.read_bufr(TEST_DATA_1, "all", flat=True, filters={"count": 2})
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#totalPrecipitationPast6Hours" in res
@@ -266,7 +267,7 @@ def test_read_flat_bufr_one_subset_one_filters() -> None:
     assert len(res) == 1
 
     # res.to_csv(REF_DATA_1, index=False)
-    ref = pd.read_csv(
+    ref = pl.read_csv(
         REF_DATA_1,
         dtype={"typicalDate": str, "typicalTime": str, "rdbtimeTime": str},
     )
@@ -282,7 +283,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
         flat=True,
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert len(res.columns) == 101
@@ -293,7 +294,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
         TEST_DATA_2, "all", flat=True, required_columns=["airTemperature"]
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert len(res.columns) == 101
@@ -303,7 +304,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
         TEST_DATA_2, "data", flat=True, required_columns=["airTemperature"]
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" not in res
     assert "#1#latitude" in res
     assert len(res.columns) == 80
@@ -313,7 +314,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
         TEST_DATA_2, "data", flat=True, required_columns=["edition", "airTemperature"]
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" not in res
     assert "#1#latitude" in res
     assert len(res.columns) == 80
@@ -323,7 +324,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
         TEST_DATA_2, "data", flat=True, required_columns=["xyz", "airTemperature"]
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert res.empty
 
     res = plbufr.read_bufr(
@@ -333,7 +334,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
         required_columns=["edition", "airTemperature"],
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" not in res
     assert len(res.columns) == 21
@@ -342,7 +343,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
     # header filter
     res = plbufr.read_bufr(TEST_DATA_2, "all", flat=True, filters={"observedData": 1})
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert len(res.columns) == 101
@@ -351,7 +352,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
     # data filter
     res = plbufr.read_bufr(TEST_DATA_2, "all", flat=True, filters={"stationNumber": 27})
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert len(res.columns) == 101
@@ -361,7 +362,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
         TEST_DATA_2, "all", flat=True, filters={"stationNumber": [27, 84]}
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#airTemperature" in res
@@ -378,7 +379,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
         filters={"observedData": 1, "stationNumber": [27, 84]},
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#airTemperature" in res
@@ -396,7 +397,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
         required_columns=["edition", "airTemperature"],
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" not in res
     assert "#1#latitude" in res
     assert "#1#airTemperature" in res
@@ -413,7 +414,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
         required_columns=["edition", "airTemperature"],
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" not in res
     assert "#1#airTemperature" not in res
@@ -428,7 +429,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
         filters={"stationNumber": [27, 84]},
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#airTemperature" in res
@@ -436,7 +437,7 @@ def test_read_flat_bufr_uncompressed_subsets() -> None:
     assert len(res) == 2
 
     # res.to_csv("REF_DATA_2", index=False)
-    ref = pd.read_csv(
+    ref = pl.read_csv(
         REF_DATA_2,
         dtype={
             "typicalDate": str,
@@ -459,7 +460,7 @@ def test_read_flat_bufr_compressed_subsets() -> None:
 
     ref_val: T.Any
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     for i in range(1, 62):
@@ -471,7 +472,7 @@ def test_read_flat_bufr_compressed_subsets() -> None:
     # required columns
     res = plbufr.read_bufr(TEST_DATA_9, "all", flat=True, required_columns=["cape"])
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     for i in range(1, 62):
@@ -484,7 +485,7 @@ def test_read_flat_bufr_compressed_subsets() -> None:
         TEST_DATA_9, "data", flat=True, required_columns=["edition", "cape"]
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" not in res
     assert "#1#latitude" in res
     for i in range(1, 62):
@@ -498,14 +499,14 @@ def test_read_flat_bufr_compressed_subsets() -> None:
         TEST_DATA_9, "data", flat=True, required_columns=["xyz", "cape"]
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert res.empty
 
     res = plbufr.read_bufr(
         TEST_DATA_9, "header", flat=True, required_columns=["edition", "cape"]
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" not in res
     assert len(res.columns) == 19
@@ -514,7 +515,7 @@ def test_read_flat_bufr_compressed_subsets() -> None:
     # header filter
     res = plbufr.read_bufr(TEST_DATA_9, "all", flat=True, filters={"observedData": 1})
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert len(res.columns) == 149
@@ -527,7 +528,7 @@ def test_read_flat_bufr_compressed_subsets() -> None:
         TEST_DATA_9, "all", flat=True, filters={"ensembleMemberNumber": 2}
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert len(res.columns) == 149
@@ -541,7 +542,7 @@ def test_read_flat_bufr_compressed_subsets() -> None:
         TEST_DATA_9, "all", flat=True, filters={"ensembleMemberNumber": [2, 4]}
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert len(res.columns) == 149
@@ -559,7 +560,7 @@ def test_read_flat_bufr_compressed_subsets() -> None:
         filters={"observedData": 1, "ensembleMemberNumber": [2, 4]},
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#cape" in res
@@ -579,7 +580,7 @@ def test_read_flat_bufr_compressed_subsets() -> None:
         required_columns=["edition", "cape"],
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" not in res
     assert "#1#latitude" in res
     assert "#1#ensembleMemberNumber" in res
@@ -599,7 +600,7 @@ def test_read_flat_bufr_compressed_subsets() -> None:
         required_columns=["edition", "cape"],
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" not in res
     assert "#1#ensembleMemberNumber" not in res
@@ -613,7 +614,7 @@ def test_read_flat_bufr_compressed_subsets_with_str() -> None:
 
     res = plbufr.read_bufr(TEST_DATA_10, "all", flat=True)
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#stationOrSiteName" in res
@@ -628,7 +629,7 @@ def test_read_flat_bufr_compressed_subsets_with_str() -> None:
         TEST_DATA_10, filters={"stationOrSiteName": "DAV2-LPTR"}, flat=True
     )
 
-    assert isinstance(res, pd.DataFrame)
+    assert isinstance(res, pl.DataFrame)
     assert "edition" in res
     assert "#1#latitude" in res
     assert "#1#stationOrSiteName" in res

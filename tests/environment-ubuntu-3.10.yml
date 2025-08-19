@@ -8,6 +8,6 @@ dependencies:
   - python-eccodes
   - nomkl
   - numpy
-  - pandas
+  - polars
   - requests
 prefix: /usr/share/miniconda/envs/ubuntu-3.10

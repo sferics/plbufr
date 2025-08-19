@@ -356,7 +356,7 @@ COMPUTED_KEYS = [
             "latitude",
             "heightOfStationGroundAboveMeanSeaLevel",
         ],
-        "geometry",  # WMO_station_position (predefined to geometry for geopandas)
+        "geometry",  # WMO_station_position (predefined to geometry for geopolars)
         wmo_station_position_from_bufr,
     ),
     (
@@ -458,11 +458,13 @@ def extract_observations(
             current_levels.append(level)
         
         """
+        # original code from pdbufr
         # yield the last observation
         if all(name in current_observation for name in filters):
             yield dict(current_observation)
         """
         
+        # modified approach with skip_na flag option
         if skip_na and count_na == len(current_observation):
             yield None
         else:

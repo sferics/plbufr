@@ -356,7 +356,7 @@ COMPUTED_KEYS = [
             "latitude",
             "heightOfStationGroundAboveMeanSeaLevel",
         ],
-        "geometry",  # WMO_station_position (predefined to geometry for geopandas)
+        "geometry",  # WMO_station_position (predefined to geometry for geopolars)
         wmo_station_position_from_bufr,
     ),
     (

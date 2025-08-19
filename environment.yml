@@ -7,6 +7,7 @@ dependencies:
 - pip
 - numpy
 - polars
+- geopolars
 - make
 - mypy
 - myst-parser
